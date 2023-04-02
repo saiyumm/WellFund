@@ -1,12 +1,13 @@
-import {TiLink} from 'react-icons/ti'
+import { TiLink } from 'react-icons/ti'
+import { Link } from 'react-router-dom'
 
 const Header = () => {
   return (
-    <header className='flex justify-between items-center p-5 bg-white border border-gray-300 fixed top-0 left-0 right-0'>
-        <a href='#' className='flex justify-start items-center text-xl text-black space-x-1'>
+    <header className='flex justify-between items-center p-5 lg:px-14 bg-white border border-gray-300 fixed top-0 left-0 right-0 border-r-0'>
+        <Link to="/" className='flex justify-start items-center text-xl text-black space-x-1'>
             <span>WellFund</span>
             <TiLink className='text-orange-400'/>
-        </a>
+        </Link>
 
         <div className='flex space-x-2 justify-center'>
             <button 
