@@ -9,7 +9,7 @@ const AddButton = () => {
             className="flex justify-center items-center w-9 h-9 bg-teal-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-teal-700"
             onClick={() => setGlobalState('createModal', 'scale-100')}
             >
-                <BsPlusLg className="font-bold" size={20} />
+                <BsPlusLg className="font-bold" size={22} />
         </button>
     </div>
   )
