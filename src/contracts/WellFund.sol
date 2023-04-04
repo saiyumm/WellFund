@@ -225,6 +225,27 @@ contract WellFund {
         }
     }
 
+
+    // function to perform payout
+    function performPayout(uint id) internal {         // takes id of user || internal - can't be accessed outside the smart contract
+        uint raised = projects[id].raised;             // total raised amount
+        uint tax = (raised * projectTax) / 100;                     // calculate tax
+
+        projects[id].status = statusEnum.PAIDOUT;                   // status --> paidout
+
+        payTo(projects[id].owner, (raised - tax));             // paid to owner of project
+        payTo(owner, tax);                                     // pay tax to platform owner
+
+        balance -= projects[id].raised;                        // deduct balance from global balance
+
+        emit Action(
+            id, 
+            "PROJECT PAID OUT", 
+            msg.sender, 
+            block.timestamp
+        );
+    }
+
     // function to send money to a specific address
     function payTo(address to, uint256 amount) internal {
         (bool success, ) = payable(to).call{value: amount}("");
