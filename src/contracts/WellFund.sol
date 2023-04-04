@@ -246,6 +246,59 @@ contract WellFund {
         );
     }
 
+
+    // function to request refund
+    function requestRefund(uint id) public returns (bool) {
+        require(
+            //check status of the project
+            projects[id].status != statusEnum.REVERTED ||
+            projects[id].status != statusEnum.DELETED,
+            "Project not marked as revert or delete"
+        );
+
+        projects[id].status = statusEnum.REVERTED;
+        performRefund(id);
+        return true;
+    }
+
+
+    // function to withdraw money
+    function payoutProject(uint id) public returns (bool) {
+        require(projects[id].status == statusEnum.APPROVED, "Project no longer APPROVED");
+        require(
+            // validation of authority
+            msg.sender == projects[id].owner ||
+            msg.sender == owner,
+            "Unauthorized Entity"
+        );
+
+        performPayout(id);
+        return true;
+    }
+
+
+    // function to change tax 
+    function changeTax(uint _taxPct) public ownerOnly {
+        projectTax = _taxPct;
+    }
+
+    // function to get a particular project
+    function getProject(uint id) public view returns (projectStruct memory) {
+        require(projectExist[id], "Project not found");
+
+        return projects[id];
+    }
+
+    // function that returns all the projects created on the projects
+    function getProjects() public view returns (projectStruct[] memory) {
+        return projects;
+    }
+
+    // function that returns all the backers for a particular project 
+    function getBackers(uint id) public view returns (backerStruct[] memory) {
+        return backersOf[id];
+    }
+
     // function to send money to a specific address
     function payTo(address to, uint256 amount) internal {
         (bool success, ) = payable(to).call{value: amount}("");
