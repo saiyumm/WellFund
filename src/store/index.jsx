@@ -6,6 +6,7 @@ const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
     updateModal: 'scale-0',
     deleteModal: 'scale-0',
     donateModal: 'scale-0',
+    connectedAccount: '',         // to connect metamask account
 })
 
 const truncate = (text, startChars, endChars, maxLength) => {
