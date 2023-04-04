@@ -138,4 +138,51 @@ contract WellFund {
         return true;
     }
 
+
+    // function to delete a project
+    function deleteProject(uint id) public returns (bool) {
+        require(projects[id].status == statusEnum.OPEN, "Project no longer opened");
+        
+        // require(
+        //     msg.sender == projects[id].owner ||         // clause -- not only the owner of the project but the platform owner can also delete the project
+        //     msg.sender == owner,
+        //     "Unautharized Entity"
+        // );
+        
+        require(msg.sender == projects[id].owner, "Unautharized Entity");   // only creater can delete the project
+
+        projects[id].status = statusEnum.DELETED;
+        performRefund(id);         // refund if the project has already got some backings
+
+        emit Action(
+            id, 
+            "PROJECT DELETED", 
+            msg.sender, 
+            block.timestamp
+        );
+        return true;
+    }
+
+
+    // function to perform refunds
+    function performRefund(uint id) internal {                      // take the id of the particular project
+        for(uint i=0; i<backersOf[id].length; i++) {                    // go to each user
+            address _owner = backersOf[id][i].owner;                    // get the address of the owner/contributor
+            uint _contribution = backersOf[id][i].contribution;         // get the contribution of user
+
+            backersOf[id][i].refunded = true;                           // mark that user as refunded
+            backersOf[id][i].timestamp = block.timestamp;               // mark the timestamp of refund
+            payTo(_owner, _contribution);                               // refund money
+
+            stats.totalBacking -= 1;                                    // updating stats
+            stats.totalDonations -= _contribution;
+        }
+    }
+
+    // function to send money to a specific address
+    function payTo(address to, uint256 amount) internal {
+        (bool success, ) = payable(to).call{value: amount}("");
+        require(success);
+    }
+
 }
