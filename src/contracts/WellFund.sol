@@ -223,6 +223,8 @@ contract WellFund {
             performRefund(id);
             return true;
         }
+
+        return true;
     }
 
 
