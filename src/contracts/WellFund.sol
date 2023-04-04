@@ -210,11 +210,18 @@ contract WellFund {
 
         // conditional statements -- checks
         // check is the raised amount surpassed the total cost -- project completed -- approve project
-        if(projects[id].raised >= projects[id].cost) {
-            projects[id].status = statusEnum.APPROVED;
-            balance += projects[id].raised;
-            performPayout(id);
-            refund true;
+        if(projects[id].raised >= projects[id].cost) {      // greater or equal -- cost
+            projects[id].status = statusEnum.APPROVED;      // status -- aproved
+            balance += projects[id].raised;                 // balance -> moneyRaised
+            performPayout(id);                              // payout
+            return true;
+        }
+
+        // check is the listed time surpassed -- perform refund to all backers
+        if(block.timestamp >= projects[id].expiresAt) {
+            projects[id].status = statusEnum.REVERTED;
+            performRefund(id);
+            return true;
         }
     }
 
