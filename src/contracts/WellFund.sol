@@ -179,6 +179,45 @@ contract WellFund {
         }
     }
 
+
+    // function to back a specific project
+    function backProject(uint id) public payable returns (bool) {           // for particular id
+        require(msg.value > 0 ether, "Amount must be greater than 0");      // validations
+        require(projectExist[id], "Project not found");
+        require(projects[id].status == statusEnum.OPEN, "Project is no longer open");
+
+        // calibrating stats
+        stats.totalBacking += 1;
+        stats.totalDonations += msg.value;
+        projects[id].raised += msg.value;
+        projects[id].backers += 1;
+
+        backersOf[id].push(     // pushing new backer with backing details
+            backerStruct(
+                msg.sender,
+                msg.value,
+                block.timestamp,
+                false
+            )
+        );
+
+        emit Action(
+            id, 
+            "PROJECT BACKED", 
+            msg.sender, 
+            block.timestamp
+        );
+
+        // conditional statements -- checks
+        // check is the raised amount surpassed the total cost -- project completed -- approve project
+        if(projects[id].raised >= projects[id].cost) {
+            projects[id].status = statusEnum.APPROVED;
+            balance += projects[id].raised;
+            performPayout(id);
+            refund true;
+        }
+    }
+
     // function to send money to a specific address
     function payTo(address to, uint256 amount) internal {
         (bool success, ) = payable(to).call{value: amount}("");
