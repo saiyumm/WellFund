@@ -20,10 +20,10 @@ const Project = () => {
   return loaded ? (
     <>
         <ProjectDetails project={project} />
-        <ProjectBackers />
         <UpdateProject project={project} />
+        <DeleteProject project={project} />
+        <ProjectBackers />
         <DonateProject />
-        <DeleteProject />
     </>
   ) : null
 }

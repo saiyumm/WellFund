@@ -103,6 +103,18 @@ const updateProject = async ({
     }
   }
 
+
+// function to delete a campaign
+const deleteProject = async (id) => {
+    try{
+        if (!ethereum) return alert('Please install MetaMask')
+        const contract = await getEthereumContract()
+        await contract.deleteProject(id)
+    } catch (error) {
+        reportError(error)
+    }
+}
+
 // function to extract and retrive projects -- all projects
 const loadProjects = async () => {
     try{
@@ -185,6 +197,7 @@ export {
     isWalletConnected,
     createProject,
     updateProject,
+    deleteProject,
     loadProjects,
     loadProject
 }
