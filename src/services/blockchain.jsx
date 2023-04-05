@@ -85,6 +85,60 @@ const createProject = async ({
   }
 
 
+// function to extract and retrive projects
+const loadProjects = async () => {
+    try{
+        if (!ethereum) return alert('Please install MetaMask')
+
+        const contract = await getEthereumContract()            // grab contract
+        const projects = await contract.getProjects()           // get project
+        const stats = await contract.stats()                    // get stats of project
+
+        setGlobalState('stats', structureStats(stats))
+        setGlobalState('projects', structuredProjects(projects))
+    } catch (error) {
+        reportError(error)
+    }
+}
+
+
+// function to structure project data while storing in array
+const structuredProjects = (projects) =>
+  projects
+    .map((project) => ({
+      id: project.id.toNumber(),
+      owner: project.owner.toLowerCase(),
+      title: project.title,
+      description: project.description,
+      timestamp: new Date(project.timestamp.toNumber()).getTime(),
+      expiresAt: new Date(project.expiresAt.toNumber()).getTime(),
+      date: toDate(project.expiresAt.toNumber() * 1000),
+      imageURL: project.imageURL,
+      raised: parseInt(project.raised._hex) / 10 ** 18,
+      cost: parseInt(project.cost._hex) / 10 ** 18,
+      backers: project.backers.toNumber(),
+      status: project.status,
+    }))
+    .reverse()
+
+// function that takes a timestamp and convert it to a date string
+const toDate = (timestamp) => {
+    const date = new Date(timestamp)
+    const dd = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`
+    const mm = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
+    const yyyy = date.getFullYear()
+    return `${yyyy}-${mm}${dd}`
+}
+
+
+// to check that data is in right data type
+const structureStats = (stats) => ({
+    totalProjects: stats.totalProjects.toNumber(),
+    totalBackings: stats.totalBacking.toNumber(),
+    totalDonations: parseInt(stats.totalDonations._hex) / 10 ** 18,
+})
+
+
 // if there is no ethereum object - throw this error
 const reportError = (error) => {
     console.log(error.message)
@@ -96,5 +150,6 @@ const reportError = (error) => {
 export {
     connectWallet,
     isWalletConnected,
-    createProject
+    createProject,
+    loadProjects
 }
