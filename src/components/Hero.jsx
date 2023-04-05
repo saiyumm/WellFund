@@ -1,6 +1,8 @@
-import { setGlobalState } from "../store"
+import { setGlobalState, useGlobalState } from "../store"
 
 const Hero = () => {
+    const [stats] = useGlobalState('stats')
+
   return (
     <div className="mx-auto justify-center text-center py-24 px-6 bg-white text-gray-800 w-11/12">
         <h1 className="text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight mb-12 mt-24">
@@ -25,17 +27,17 @@ const Hero = () => {
 
         <div className="flex justify-center items-center mt-14 space-x-3 w-11/12 mx-auto">
             <div className="flex flex-col justify-center items-center h-20 border border-gray-400 rounded-2xl shadow-md w-full">
-                <span className="text-lg font-bold text-teal-600 leading-5">{0}</span>
+                <span className="text-lg font-bold text-teal-600 leading-5">{stats?.totalProjects || 0}</span>
                 <span>Projects</span>
             </div>
             
             <div className="flex flex-col justify-center items-center h-20 border border-gray-400 rounded-2xl shadow-md w-full">
-                <span className="text-lg font-bold text-teal-600 leading-5">{0}</span>
+                <span className="text-lg font-bold text-teal-600 leading-5">{stats?.totalBacking || 0}</span>
                 <span>Backings</span>
             </div>
             
             <div className="flex flex-col justify-center items-center h-20 border border-gray-400 rounded-2xl shadow-md w-full">
-                <span className="text-lg font-bold text-teal-600 leading-5">{0} ETH</span>
+                <span className="text-lg font-bold text-teal-600 leading-5">{stats?.totalDonations || 0} ETH</span>
                 <span>Donated</span>
             </div>
         </div>

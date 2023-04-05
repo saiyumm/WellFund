@@ -134,7 +134,7 @@ const toDate = (timestamp) => {
 // to check that data is in right data type
 const structureStats = (stats) => ({
     totalProjects: stats.totalProjects.toNumber(),
-    totalBackings: stats.totalBacking.toNumber(),
+    totalBacking: stats.totalBacking.toNumber(),
     totalDonations: parseInt(stats.totalDonations._hex) / 10 ** 18,
 })
 
