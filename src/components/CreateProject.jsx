@@ -98,7 +98,7 @@ const CreateProject = () => {
                             step={0.01}
                             min={0.01}
                             name="cost"
-                            placeholder='cost (ETH)'
+                            placeholder='Amount (ETH)'
 
                             onChange={(e) => setCost(e.target.value)}
                             value={cost}
