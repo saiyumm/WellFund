@@ -2,17 +2,41 @@ import { Link } from 'react-router-dom'
 import Identicons from 'react-identicons'
 import { daysRemaining, truncate } from '../store'
 import { FaEthereum } from 'react-icons/fa'
+import { useEffect, useState } from 'react'
 
 const Projects = ({ projects }) => {
-  return (
-    <div className="flex flex-col px-6">
-        <div className="flex justify-center items-center flex-wrap">
-            {projects.map((project, i) => (
-                    <ProjectCard key={i} project={project} />
-                ))}
+    const [end, setEnd] = useState(4)
+    const [count] = useState(4)
+    const [collection, setCollection] = useState([])
+
+    const getCollection = () => projects.slice(0, end)
+
+    useEffect(() => {
+        setCollection(getCollection())
+    }, [projects, end])
+        
+    return (
+        <div className="flex flex-col px-6 mb-7">
+            <div className="flex justify-center items-center flex-wrap">
+                {collection.map((project, i) => (
+                        <ProjectCard key={i} project={project} />
+                    ))}
+            </div>
+            
+            {/* // load more button */}
+            {projects.length > 0 && projects.length > collection.length ? (
+                <div className="flex justify-center items-center my-6">
+                    <button 
+                        type='button'
+                        className='inline-block px-6 py-2.5 rounded-full bg-teal-500 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-teal-600'
+                        onClick={() => setEnd(end + count)}
+                    >
+                        Load More
+                    </button>
+                </div>
+            ) : null}
         </div>
-    </div>
-  )
+    )
 }
 
 const ProjectCard = ({project }) => (
