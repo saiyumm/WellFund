@@ -1,17 +1,58 @@
+import { useState } from 'react'
 import { FaTimes } from 'react-icons/fa'
+import { toast } from "react-toastify"
+import { updateProject } from '../services/blockchain'
 import { useGlobalState, setGlobalState } from '../store'
+import 'react-toastify/dist/ReactToastify.css';
 
-const UpdateProject = () => {
-    const [updateModal] = useGlobalState("updateModal")
+
+const UpdateProject = ({ project }) => {
+    const [updateModal] = useGlobalState('updateModal')
+    //variables needed for submission
+    const [title, setTitle] = useState(project?.title)
+    const [description, setDescription] = useState(project?.description)
+    const [date, setDate] = useState(project?.date)
+    const [imageURL, setImageURL] = useState(project?.imageURL)
+
+    //take a particular date string and 
+    const toTimestamp = (dateStr) => {
+        const dateObj = Date.parse(dateStr)
+        return dateObj / 1000
+    }
+
+    // to handle new create requests
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        // validation and condition
+        if(!title || !description || !date || !imageURL) return
+
+        const params = {
+            id: project?.id,
+            title,
+            description,
+            expiresAt: toTimestamp(date),
+            imageURL,
+        }
+
+        await updateProject(params)
+        toast.success('Project updated successfully, will reflect in 30 seconds')
+        onClose()
+    }
+
+    // fires whenever we close the create new campaign form
+    const onClose = () => {
+        setGlobalState('updateModal', 'scale-0')
+    }
 
     return (
         <div className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-40 transform transition-transform duration-700 ${updateModal}`}>
             <div className="bg-white shadow-md shadow-black rounded-xl w-11/12 md:w-2/5 h-7/12 p-6">
-                <form className="flex flex-col">
+                <form onSubmit={handleSubmit} className="flex flex-col">
                     <div className="flex justify-between items-center">
                         <p className="font-semibold">Edit Project</p>
                         <button
-                            onClick={() => setGlobalState("updateModal",'scale-0')}
+                            // onClick={() => setGlobalState("updateModal",'scale-0')}
+                            onClick={onClose}   // replaced the command with newly created onClose function
                             type="button" 
                             className="border-0 bg-transparent focus:outline-none">
                             <FaTimes />
@@ -20,7 +61,9 @@ const UpdateProject = () => {
 
                     <div className='flex justify-center items-center mt-5'>
                         <div className='rounded-xl overflow-hidden h-20 w-20'>
-                            <img src='https://ksr-ugc.imgix.net/assets/039/605/244/5c485420112ae621ad37bd8e1bb2b3ca_original.png?ixlib=rb-4.0.2&w=680&fit=max&v=1673005621&gif-q=50&lossless=true&s=7a578a2fd45356ee5b6d90c0ad51329c' alt='projectImage' className='h-full w-full object-cover cursor-pointer'/>
+                            <img src= {imageURL || 'https://media.istockphoto.com/vectors/vector-crowdfunding-concept-in-flat-style-vector-id508447789'}
+                            alt='projectImage' 
+                            className='h-full w-full object-cover cursor-pointer'/>
                         </div>
                     </div>
 
@@ -30,18 +73,9 @@ const UpdateProject = () => {
                             type="text"
                             name="title"
                             placeholder='Title'
-                            required
-                        />
-                    </div>
-
-                    <div className='flex justify-between items-center bg-gray-300 rounded-xl mt-5'>
-                        <input 
-                            className='block w-full bg-transparent border-0 text-small text-slate-800 focus:outline-none focus:ring-0' 
-                            type="number"
-                            step={0.01}
-                            min={0.01}
-                            name="amount"
-                            placeholder='Amount (ETH)'
+                            // to update -- when get new entry
+                            onChange={(e) => setTitle(e.target.value)}
+                            value={title}
                             required
                         />
                     </div>
@@ -52,6 +86,9 @@ const UpdateProject = () => {
                             type="date"
                             name="date"
                             placeholder='Expiry Date'
+
+                            onChange={(e) => setDate(e.target.value)}
+                            value={date}
                             required
                         />
                     </div>
@@ -62,6 +99,9 @@ const UpdateProject = () => {
                             type="url"
                             name="imageURL"
                             placeholder='Image URL'
+
+                            onChange={(e) => setImageURL(e.target.value)}
+                            value={imageURL}
                             required
                         />
                     </div>
@@ -72,13 +112,16 @@ const UpdateProject = () => {
                             type="text"
                             name="description"
                             placeholder='Description'
+
+                            onChange={(e) => setDescription(e.target.value)}
+                            value={description}
                             required 
                         ></textarea>
                     </div>
 
                     <button type='submit'
                         className='inline-block px-6 py-2.5 rounded-xl bg-teal-600 text-white font-medium text-md leading-tight shadow-md hover:bg-teal-700 mt-5'>
-                            Submit Project
+                            Update Project
                     </button>
                 </form>
             </div>

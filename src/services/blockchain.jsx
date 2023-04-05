@@ -85,6 +85,24 @@ const createProject = async ({
   }
 
 
+// function to update project
+const updateProject = async ({
+    id,
+    title,
+    description,
+    imageURL,
+    expiresAt,
+  }) => {
+    try {
+      if (!ethereum) return alert('Please install Metamask')
+  
+      const contract = await getEthereumContract()
+      await contract.updateProject(id, title, description, imageURL, expiresAt)
+    } catch (error) {
+      reportError(error)
+    }
+  }
+
 // function to extract and retrive projects -- all projects
 const loadProjects = async () => {
     try{
@@ -142,7 +160,7 @@ const toDate = (timestamp) => {
     const dd = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`
     const mm = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
     const yyyy = date.getFullYear()
-    return `${yyyy}-${mm}${dd}`
+    return `${yyyy}-${mm}-${dd}`
 }
 
 
@@ -166,6 +184,7 @@ export {
     connectWallet,
     isWalletConnected,
     createProject,
+    updateProject,
     loadProjects,
     loadProject
 }
