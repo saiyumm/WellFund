@@ -48,7 +48,7 @@ const ProjectCard = ({project }) => (
                 className='rounded-xl h-64 w-full object-cover'/>
 
             <div className='p-4'>
-                <h5>{project.title}</h5>           
+                <h5 className='mb-1'>{project.title}</h5>           
 
                 <div className='flex flex-col'>
                     <div className='flex justify-between items-center mb-3'>
