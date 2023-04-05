@@ -37,6 +37,22 @@ const CreateProject = () => {
 
         await createProject(params)
         toast.success('Project created successfully, will reflect in 30 seconds')
+        onClose()
+    }
+
+    // fires whenever we close the create new campaign form
+    const onClose = () => {
+        setGlobalState('createModal', 'scale-0')
+        reset()
+    }
+
+    //to reset the new campaign form
+    const reset = () => {
+        setTitle('')
+        setCost('')
+        setDescription('')
+        setImageURL('')
+        setDate('')
     }
 
     return (
@@ -46,7 +62,8 @@ const CreateProject = () => {
                     <div className="flex justify-between items-center">
                         <p className="font-semibold">Add Project</p>
                         <button
-                            onClick={() => setGlobalState("createModal",'scale-0')}
+                            // onClick={() => setGlobalState("createModal",'scale-0')}
+                            onClick={onClose}   // replaced the command with newly created onClose function
                             type="button" 
                             className="border-0 bg-transparent focus:outline-none">
                             <FaTimes />
