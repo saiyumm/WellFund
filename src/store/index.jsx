@@ -8,6 +8,7 @@ const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
     donateModal: 'scale-0',
     connectedAccount: '',         // to connect metamask account
     projects: [],
+    project: null,
     stats: null,
 })
 

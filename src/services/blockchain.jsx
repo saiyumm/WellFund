@@ -85,7 +85,7 @@ const createProject = async ({
   }
 
 
-// function to extract and retrive projects
+// function to extract and retrive projects -- all projects
 const loadProjects = async () => {
     try{
         if (!ethereum) return alert('Please install MetaMask')
@@ -100,6 +100,21 @@ const loadProjects = async () => {
         reportError(error)
     }
 }
+
+
+// function to load a specific project by its ID
+const loadProject = async (id) => {
+    try {
+      if (!ethereum) return alert('Please install Metamask')
+      const contract = await getEthereumContract()
+      const project = await contract.getProject(id)
+  
+      setGlobalState('project', structuredProjects([project])[0])
+    } catch (error) {
+      alert(JSON.stringify(error.message))
+      reportError(error)
+    }
+  }
 
 
 // function to structure project data while storing in array
@@ -151,5 +166,6 @@ export {
     connectWallet,
     isWalletConnected,
     createProject,
-    loadProjects
+    loadProjects,
+    loadProject
 }
