@@ -265,8 +265,8 @@ contract WellFund {
 
 
     // function to withdraw money
-    function payoutProject(uint id) public returns (bool) {
-        require(projects[id].status == statusEnum.APPROVED, "Project no longer APPROVED");
+    function payOutProject(uint id) public returns (bool) {
+        require(projects[id].status == statusEnum.APPROVED, "Project not APPROVED");
         require(
             // validation of authority
             msg.sender == projects[id].owner ||
