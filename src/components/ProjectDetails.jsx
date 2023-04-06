@@ -6,6 +6,7 @@ import { payoutProject } from '../services/blockchain'
 const ProjectDetails = ({ project }) => {
     // to get connection status
   const [connectedAccount] = useGlobalState('connectedAccount')
+  const expired = new Date().getTime() > Number(project?.expiresAt + '000') 
 
   return (
     <div className="py-28 px-6 flex justify-center">
@@ -21,10 +22,9 @@ const ProjectDetails = ({ project }) => {
                 <div className="flex flex-col justify-start flex-wrap">
                     <h5 className="text-gray-900 text-xl font-medium mb-2">{project?.title}</h5>
                     <small className="text-gray-500">
-                        {new Date().getTime() > Number(project?.expiresAt + '000') 
+                        {expired 
                             ? 'Expired' 
-                            : daysRemaining(project?.expiresAt)}{" "}
-                        left
+                            : daysRemaining(project?.expiresAt) + ' left'}
                     </small>
                 </div>
 
@@ -44,10 +44,12 @@ const ProjectDetails = ({ project }) => {
                     </div>
 
                     <div className='font-bold'>
-                        {project?.status == 0 ? (
-                            <small className='text-gray-500'>Open</small>
+                        {expired ? (
+                            <small className='text-red-500'>Expired</small>
+                        ) : project?.status == 0 ? (
+                            <small className='text-green-500'>Open</small>
                         ) : project?.status == 1 ? (
-                            <small className='text-green-500'>Accepted</small>
+                            <small className='text-gray-500'>Accepted</small>
                         ) : project?.status == 2 ? (
                             <small className='text-gray-500'>Reverted</small>
                         ) : project?.status == 3 ? (
@@ -62,9 +64,9 @@ const ProjectDetails = ({ project }) => {
                     <p className='text-sm font-light mt-2'>
                         {project?.description}
                     </p>
-                    <div className='w-full bg-gray-300  mt-4'>
+                    <div className='w-full bg-gray-300  mt-4 overflow-hidden'>
                         <div 
-                            className='bg-teal-600 text-xs font-medium text-teal-300 text-center p-0.5 leading-none rounded-full'
+                            className='bg-teal-600 text-xs font-medium text-teal-300 text-center p-0.5 leading-none rounded-full h-1 overflow-hidden max-w-full'
                             style={{width: `${(project?.raised / project?.cost) * 100}%`}}
                         ></div>
                     </div>
@@ -78,64 +80,68 @@ const ProjectDetails = ({ project }) => {
                     </div>
 
                     <div className="flex justify-start items-center space-x-3 mt-4">
-                        
-                        {project?.status == 0 ? (
-                        // only visible if campaign is open
-                            <button type='button'
-                                className='inline-block px-6 py-2.5 rounded-xl bg-green-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-green-700'
-                                onClick={() => setGlobalState('donateModal', 'scale-100')}
-                                >
-                                    Back Project
-                            </button>
-                        ) : null}
 
-                        
-                        {connectedAccount == project?.owner ? (
-                            // make sure that the project is not already deleted and accepted also -- then only render payout button
-                            project?.status != 3 ? (
-                                project?.status == 1 ? (
-                                    <button 
-                                        type='button'
-                                        className='inline-block px-6 py-2.5 rounded-xl bg-teal-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-teal-700'
-                                        onClick={() => payoutProject(project?.id)}
-                                    >
-                                            Payout
-                                    </button>
-                                ) : project?.status != 4 ? (
-                                    // if it is not accepted + (not paidout) -> edit or delete 
-                                    <>                    
-                                        <button 
-                                            type='button'
-                                            className='inline-block px-6 py-2.5 rounded-xl bg-gray-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-gray-700'
-                                            onClick={() => setGlobalState('updateModal', 'scale-100')}
-                                            >
-                                                Edit
-                                        </button>
-                                        <button 
-                                            type='button'
-                                            className='inline-block px-6 py-2.5 rounded-xl bg-red-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-red-700'
-                                            onClick={() => setGlobalState('deleteModal', 'scale-100')}
-                                            >
-                                                Delete
-                                        </button>
-                                    </>
-                                ) : (
-                                    <button 
-                                        type='button'
-                                        className='inline-block px-6 py-2.5 rounded-xl bg-gray-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-gray-700'
+                        {expired ? ( null ) : (
+                            <>
+                                {project?.status == 0 ? (
+                                // only visible if campaign is open
+                                    <button type='button'
+                                        className='inline-block px-6 py-2.5 rounded-xl bg-green-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-green-700'
+                                        onClick={() => setGlobalState('donateModal', 'scale-100')}
                                         >
-                                            Project Closed
+                                            Back Project
                                     </button>
-                                )
-                            ) : null
-                        ) : null}
+                                ) : (null)}
+
+                                
+                                {connectedAccount == project?.owner ? (
+                                    // make sure that the project is not already deleted
+                                    project?.status != 3 ? (
+                                        // check that project is approved - if yes -> auto payout initiates
+                                        project?.status == 1 ? (
+                                            <button 
+                                                type='button'
+                                                className='inline-block px-6 py-2.5 rounded-xl bg-teal-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-teal-700'
+                                                onClick={() => payoutProject(project?.id)}
+                                            >
+                                                    Payout
+                                            </button>
+
+                                            // elseIf -- project is not yet paidout
+                                        ) : project?.status != 4 ? (
+                                            <>                    
+                                                <button 
+                                                    type='button'
+                                                    className='inline-block px-6 py-2.5 rounded-xl bg-gray-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-gray-700'
+                                                    onClick={() => setGlobalState('updateModal', 'scale-100')}
+                                                    >
+                                                        Edit
+                                                </button>
+                                                <button 
+                                                    type='button'
+                                                    className='inline-block px-6 py-2.5 rounded-xl bg-red-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-red-700'
+                                                    onClick={() => setGlobalState('deleteModal', 'scale-100')}
+                                                    >
+                                                        Delete
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button 
+                                                type='button'
+                                                className='inline-block px-6 py-2.5 rounded-xl bg-gray-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-gray-700'
+                                                >
+                                                    Project Closed
+                                            </button>
+                                        )
+                                    ) : null
+                                ) : null}
+                            </>
+                        )}
+                        
                     </div>
                 </div>
             </div>
         </div>
-        
-        
-
       </div>
     </div>
   )

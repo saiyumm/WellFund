@@ -39,7 +39,10 @@ const Projects = ({ projects }) => {
     )
 }
 
-const ProjectCard = ({project }) => (
+const ProjectCard = ({project }) => {
+    const expired = new Date().getTime() > Number(project?.expiresAt + '000')
+
+    return(
     <div id="projects" className="rounded-lg shadow-lg bg-white w-64 m-4">
         <Link to={'/projects/' + project.id}>
             <img 
@@ -51,7 +54,7 @@ const ProjectCard = ({project }) => (
                 <h5 className='mb-1'>{project.title}</h5>           
 
                 <div className='flex flex-col'>
-                    <div className='flex justify-between items-center mb-3'>
+                    <div className='flex justify-start space-x-2 items-center mb-3'>
                         <Identicons 
                             className='rounded-full shadow-md' 
                             string={project.owner} 
@@ -61,10 +64,9 @@ const ProjectCard = ({project }) => (
                     </div>
 
                     <small className='text-gray-500 mb-1'>
-                        {new Date().getTime() > Number(project.expiresAt + '000') 
+                        {expired 
                         ? 'Expired' 
-                        : daysRemaining(project.expiresAt)}{" "}
-                    left
+                        : daysRemaining(project.expiresAt) + ' left'}
                     </small>
                 </div>
 
@@ -86,13 +88,15 @@ const ProjectCard = ({project }) => (
                         {project.backers} Backer{project.backers == 1 ? '' : 's'}
                     </small>
                     <div>
-                        {project.status == 0 ? (
-                            <small className='text-gray-500'>Open</small>
-                        ) : project.status == 1 ? (
-                            <small className='text-green-500'>Accepted</small>
-                        ) : project.status == 2 ? (
+                        {expired ? (
+                            <small className='text-red-500'>Expired</small>
+                        ) : project?.status == 0 ? (
+                            <small className='text-green-500'>Open</small>
+                        ) : project?.status == 1 ? (
+                            <small className='text-gray-500'>Accepted</small>
+                        ) : project?.status == 2 ? (
                             <small className='text-gray-500'>Reverted</small>
-                        ) : project.status == 3 ? (
+                        ) : project?.status == 3 ? (
                             <small className='text-red-500'>Deleted</small>
                         ) : (
                             <small className='text-orange-500'>Paid</small>
@@ -102,6 +106,6 @@ const ProjectCard = ({project }) => (
             </div>
         </Link>
     </div>
-)
+)}
 
 export default Projects
