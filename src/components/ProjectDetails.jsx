@@ -1,6 +1,7 @@
 import Identicons from 'react-identicons'
 import { FaEthereum } from 'react-icons/fa'
 import { daysRemaining, setGlobalState, truncate, useGlobalState } from '../store'
+import { payoutProject } from '../services/blockchain'
 
 const ProjectDetails = ({ project }) => {
     // to get connection status
@@ -95,7 +96,9 @@ const ProjectDetails = ({ project }) => {
                                 project?.status == 1 ? (
                                     <button 
                                         type='button'
-                                        className='inline-block px-6 py-2.5 rounded-xl bg-teal-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-teal-700'>
+                                        className='inline-block px-6 py-2.5 rounded-xl bg-teal-600 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-teal-700'
+                                        onClick={() => payoutProject(project?.id)}
+                                    >
                                             Payout
                                     </button>
                                 ) : project?.status != 4 ? (

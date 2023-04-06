@@ -181,6 +181,21 @@ const getBackers = async (id) => {
 }
 
 
+// function to payout project
+const payoutProject = async (id) => {
+    try{
+        if (!ethereum) return alert('Please install MetaMask')
+        const connectedAccount = getGlobalState('connectedAccount')
+        const contract = await getEthereumContract()
+
+        await contract.payOutProject(id, {
+            from: connectedAccount,
+        })
+    } catch (error) {
+        reportError(error)
+    }
+}
+
 //function to get all backers - an array of backers (in reverse order) -> most recent comes first
 const structuredBackers = (backers) =>
     backers
@@ -248,4 +263,5 @@ export {
     loadProject,
     donateProject,
     getBackers,
+    payoutProject,
 }
