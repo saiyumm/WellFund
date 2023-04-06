@@ -181,7 +181,7 @@ contract WellFund {
 
 
     // function to back a specific project
-    function backProject(uint id) public payable returns (bool) {           // for particular id
+    function donateProject(uint id) public payable returns (bool) {           // for particular id
         require(msg.value > 0 ether, "Amount must be greater than 0");      // validations
         require(projectExist[id], "Project not found");
         require(projects[id].status == statusEnum.OPEN, "Project is no longer open");
