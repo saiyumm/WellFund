@@ -165,6 +165,33 @@ const donateProject = async (id, amount) => {
     }
 }
 
+// function to get all backers of a certain project
+const getBackers = async (id) => {
+    try{
+        if (!ethereum) return alert ('Please install MetaMask')
+        // grabbing contracts
+        const contract = await getEthereumContract()
+        //fetching backers
+        let backers = await contract.getBackers(id)
+
+        setGlobalState('backers', structuredBackers(backers))
+    } catch (error) {
+        reportError(error)
+    }
+}
+
+
+//function to get all backers - an array of backers (in reverse order) -> most recent comes first
+const structuredBackers = (backers) =>
+    backers
+        .map((backer) => ({
+            owner: backer.owner.toLowerCase(),
+            refunded: backer.refunded,
+            timestamp: new Date(backer.timestamp.toNumber() * 1000).toJSON(),
+            contribution: parseInt(backer.contribution._hex) / 10 ** 18,
+        }))
+        .reverse()
+
 
 // function to structure project data while storing in array
 const structuredProjects = (projects) =>
@@ -220,4 +247,5 @@ export {
     loadProjects,
     loadProject,
     donateProject,
+    getBackers,
 }

@@ -5,16 +5,18 @@ import DonateProject from "../components/DonateProject"
 import ProjectBackers from "../components/ProjectBackers"
 import ProjectDetails from "../components/ProjectDetails"
 import UpdateProject from "../components/UpdateProject"
-import { loadProject } from "../services/blockchain"
+import { getBackers, loadProject } from "../services/blockchain"
 import { useGlobalState } from "../store"
 
 const Project = () => {
   const { id } = useParams()
   const [loaded, setLoaded] = useState(false)
   const [project] = useGlobalState('project')
+  const [backers] = useGlobalState('backers')
 
   useEffect(async () => {
     await loadProject(id)
+    await getBackers(id)
     setLoaded(true)
   }, [])
   return loaded ? (
@@ -23,7 +25,7 @@ const Project = () => {
         <UpdateProject project={project} />
         <DeleteProject project={project} />
         <DonateProject project={project} />
-        <ProjectBackers />
+        <ProjectBackers backers={backers} />
     </>
   ) : null
 }
