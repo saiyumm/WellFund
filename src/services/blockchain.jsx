@@ -147,6 +147,25 @@ const loadProject = async (id) => {
   }
 
 
+// function to back project or to donate to a project
+const donateProject = async (id, amount) => {
+    try{
+        if (!ethereum) return alert('Please install MetaMask')
+        const connectedAccount = getGlobalState('connectedAccount')
+        const contract = await getEthereumContract()
+        amount = ethers.utils.parseEther(amount)
+
+        await contract.donateProject(id, {
+            from: connectedAccount,
+            value: amount._hex,
+        })
+        //  setTimeout(function(){ location.reload(); }, 5000);
+    } catch (error) {
+        reportError(error)
+    }
+}
+
+
 // function to structure project data while storing in array
 const structuredProjects = (projects) =>
   projects
@@ -199,5 +218,6 @@ export {
     updateProject,
     deleteProject,
     loadProjects,
-    loadProject
+    loadProject,
+    donateProject,
 }

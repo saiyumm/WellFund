@@ -22,8 +22,8 @@ const Project = () => {
         <ProjectDetails project={project} />
         <UpdateProject project={project} />
         <DeleteProject project={project} />
+        <DonateProject project={project} />
         <ProjectBackers />
-        <DonateProject />
     </>
   ) : null
 }

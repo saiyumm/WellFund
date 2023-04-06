@@ -64,7 +64,7 @@ const ProjectDetails = ({ project }) => {
                     <div className='w-full bg-gray-300  mt-4'>
                         <div 
                             className='bg-teal-600 text-xs font-medium text-teal-300 text-center p-0.5 leading-none rounded-full'
-                            style={{width: `${(project?.raised / project?.cost) * 100}`}}
+                            style={{width: `${(project?.raised / project?.cost) * 100}%`}}
                         ></div>
                     </div>
 

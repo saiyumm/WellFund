@@ -1,15 +1,32 @@
+import { useState } from 'react'
 import { FaTimes } from 'react-icons/fa'
 import { useGlobalState, setGlobalState } from '../store'
+import { toast } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
+import { donateProject } from '../services/blockchain';
 
-const DonateProject = () => {
+const DonateProject = ({ project }) => {
     const [donateModal] = useGlobalState("donateModal")
+    // creating a useState variable
+    const [amount, setAmount] = useState('')
+
+    // to handle new donation / backing
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        // validation and condition
+        if(!amount) return
+
+        await donateProject(project?.id, amount)
+        toast.success('Project backed successfully, will reflect in 30 seconds')
+        setGlobalState("donateModal",'scale-0')
+    }
 
     return (
         <div className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-40 transform transition-transform duration-700 ${donateModal}`}>
             <div className="bg-white shadow-md shadow-black rounded-xl w-11/12 md:w-2/5 h-7/12 p-6">
-                <form className="flex flex-col">
+                <form onSubmit={handleSubmit} className="flex flex-col">
                     <div className="flex justify-between items-center">
-                        <p className="font-semibold">Project Title</p>
+                        <p className="font-semibold">{project?.title}</p>
                         <button
                             onClick={() => setGlobalState("donateModal",'scale-0')}
                             type="button" 
@@ -20,7 +37,10 @@ const DonateProject = () => {
 
                     <div className='flex justify-center items-center mt-5'>
                         <div className='rounded-xl overflow-hidden h-20 w-20'>
-                            <img src='https://ksr-ugc.imgix.net/assets/039/605/244/5c485420112ae621ad37bd8e1bb2b3ca_original.png?ixlib=rb-4.0.2&w=680&fit=max&v=1673005621&gif-q=50&lossless=true&s=7a578a2fd45356ee5b6d90c0ad51329c' alt='projectImage' className='h-full w-full object-cover cursor-pointer'/>
+                            <img 
+                                src={project?.imageURL || 'https://media.istockphoto.com/vectors/vector-crowdfunding-concept-in-flat-style-vector-id508447789'} 
+                                alt={project?.title} 
+                                className='h-full w-full object-cover cursor-pointer'/>
                         </div>
                     </div>
 
@@ -32,6 +52,8 @@ const DonateProject = () => {
                             min={0.01}
                             name="amount"
                             placeholder='Amount (ETH)'
+                            onChange={(e) => setAmount(e.target.value)}
+                            value={amount}
                             required
                         />
                     </div>
