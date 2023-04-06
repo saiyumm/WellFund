@@ -19,6 +19,9 @@ const DonateProject = ({ project }) => {
         await donateProject(project?.id, amount)
         toast.success('Project backed successfully, will reflect in 30 seconds')
         setGlobalState("donateModal",'scale-0')
+        setTimeout(function(){
+            window.location.reload(1);
+            }, 20000);
     }
 
     return (

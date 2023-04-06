@@ -72,7 +72,7 @@ const ProjectCard = ({project }) => {
 
                 <div className='w-full bg-gray-300 overflow-hidden'>
                     <div className='bg-teal-600 text-xs font-medium text-teal-300 text-center p-0.5 leading-none rounded-full'
-                    style={{width: `${(project.raised / project.cost) * 100}`}}></div>
+                    style={{width: `${(project.raised / project.cost) * 100}%`}}></div>
                 </div>
 
                 <div className='flex justify-between items-center font-bold mt-1 mb-2 text-gray-700'>

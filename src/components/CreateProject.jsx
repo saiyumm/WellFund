@@ -38,6 +38,9 @@ const CreateProject = () => {
         await createProject(params)
         toast.success('Project created successfully, will reflect in 30 seconds')
         onClose()
+        setTimeout(function(){
+            window.location.reload(1);
+            }, 20000);
     }
 
     // fires whenever we close the create new campaign form
