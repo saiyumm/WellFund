@@ -3,6 +3,15 @@ import { setGlobalState, useGlobalState } from "../store"
 const Hero = () => {
     const [stats] = useGlobalState('stats')
 
+
+// scroll function for fund existing campaign button
+function handleClick() {
+    window.scrollTo({
+        top: 500, // Replace with the number of pixels you want to scroll down by
+        behavior: "smooth" // This will make the scroll animation smooth
+    });
+    }
+
   return (
     <div className="mx-auto justify-center text-center py-24 px-6 bg-white text-gray-800 w-11/12">
         <h1 className="text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight mb-12 mt-24">
@@ -20,7 +29,8 @@ const Hero = () => {
             </button>
         
             <button type='button'
-                className='inline-block px-6 py-2.5 rounded-xl border border-teal-500 bg-white text-teal-800 font-medium text-xs leading-tight uppercase shadow-md hover:bg-teal-500 hover:text-white'>
+                className='inline-block px-6 py-2.5 rounded-xl border border-teal-500 bg-white text-teal-800 font-medium text-xs leading-tight uppercase shadow-md hover:bg-teal-500 hover:text-white'
+                onClick={handleClick}>
                     Fund Existing Campaign
             </button>
         </div>
