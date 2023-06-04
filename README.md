@@ -4,6 +4,13 @@
 WellFund is a decentralized crowdfunding platform built on the Ethereum blockchain. It aims to revolutionize the way fundraising is conducted by leveraging the transparency, security, and efficiency provided by blockchain technology.
 
 --------------------------------------------------------
+<br>
+
+![WellFund](./ScreenShots/11_finalHomeView.png)
+<center><figcaption>WellFund Project - Home Page</figcaption></center>
+<br>
+
+--------------------------------------------------------
 
 ## Dependencies
 To run the WellFund project locally, the following dependencies are required:
